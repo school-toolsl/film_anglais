@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    <title>Scenario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #333;
+            font-family: arial, sans-serif;
+            height: 100%;
+        }
+
+        p {
+            color: white;
+            padding: 10px;
+        }
+
+        #upbar {
+            background-color: #222;
+            color: white;
+            height: 80px;
+            padding-top: 20px;
+            padding-left: 15px;
+            border-bottom: #000 solid 5px;
+        }
+
+        #selectors {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        select {
+            margin: 5px;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            background-color: #222;
+        }
+
+        #scenario {
+            margin: 10px;
+            height: calc(100% - 150px);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="upbar">
+        <h1>Scenario</h1>
+    </div>
+    <div id="selectors">
+        <select name="scene" id="select1" class="select">
+            <option value="1">Scène 1</option>
+            <option value="2">Scène 2</option>
+            <option value="3">Scène 3</option>
+            <option value="4">Scène 4</option>
+        </select>
+        <select name="perso" id="select2" class="select">
+            <option value="all">All characters</option>
+            <option value="1">Colin</option>
+            <option value="2">Marie-Lou</option>
+            <option value="3">Maxence</option>
+            <option value="4">Julie</option>
+        </select>
+    </div>
+    <div id="scenario">
+        <p>Contenu de la scène :</p>
+        <p id="scenario-content">Sélectionnez une scène ou un personnage pour voir le contenu.</p>
+    </div>
+
+    <script>
+        const select1 = document.getElementById('select1');
+        const select2 = document.getElementById('select2');
+        const scenarioContent = document.getElementById('scenario-content');
+
+        let scenarios = {};
+
+        fetch('https://school-toolsl.github.io/film_anglais/scénario.json')
+            .then(response => response.json())
+            .then(data => {
+                scenarios = data;
+                updateScenario();
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement du fichier JSON :', error);
+                scenarioContent.textContent = 'Erreur lors du chargement du scénario.';
+            });
+
+
+        function updateScenario() {
+            const scene = select1.value;
+            const character = select2.value;
+
+            if (scene && character && scenarios[scene] && scenarios[scene][character]) {
+                scenarioContent.innerHTML = scenarios[scene][character];
+            } else {
+                scenarioContent.textContent = 'Sélectionnez une scène ou un personnage pour voir le contenu.';
+            }
+        }
+
+        select1.addEventListener('change', updateScenario);
+        select2.addEventListener('change', updateScenario);
+    </script>
+</body>
+
+</html>
